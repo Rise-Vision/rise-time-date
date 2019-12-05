@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>rise-time-date test</title>
+
+  <script src="../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+  <script src="../../node_modules/mocha/mocha.js"></script>
+  <script src="../../node_modules/chai/chai.js"></script>
+  <script src="../../node_modules/wct-mocha/wct-mocha.js"></script>
+  <script src="../../node_modules/sinon/pkg/sinon.js"></script>
+
+  <script type="text/javascript">
+    RisePlayerConfiguration = {
+      isConfigured: () => true
+    };
+  </script>
+
+  <script type="module" src="../../src/rise-time-date.js"></script>
+</head>
+<body>
+<test-fixture id="test-block">
+  <template>
+    <rise-time-date></rise-time-date>
+  </template>
+</test-fixture>
+
+<script type="module">
+  suite("rise-time-date", () => {
+    let element;
+
+    setup(() => {
+      element = fixture("test-block");
+    });
+
+    suite("properties", () => {
+      test("coming soon ...", () => {});
+    });
+
+  });
+</script>
+</body>
+</html>
