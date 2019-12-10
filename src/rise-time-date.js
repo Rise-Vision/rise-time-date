@@ -38,7 +38,7 @@ export default class RiseTimeDate extends RiseElement {
         value: "h:mm A"
       },
       /**
-       *
+       * The specific timezone to use for formatting date and/or time. For example "US/Eastern"
        */
       timezone: {
         type: String,
