@@ -30,15 +30,141 @@
 
 <script type="module">
   suite("rise-time-date", () => {
-    let element;
+    let sandbox = sinon.createSandbox();
+    let element, clock, riseElement;
 
     setup(() => {
+      RisePlayerConfiguration.isPreview = () => {
+        return false;
+      };
+
+      RisePlayerConfiguration.Logger = {
+        info: () => {},
+        warning: () => {},
+        error: sinon.spy()
+      };
+
+      clock = sinon.useFakeTimers();
+
       element = fixture("test-block");
+
+      riseElement = element.__proto__.__proto__;
+    });
+
+    teardown(()=>{
+      sandbox.restore();
+      clock.restore();
     });
 
     suite("properties", () => {
-      test("coming soon ...", () => {});
+      test("should set default for type", () => {
+        assert.equal(element.type, "timedate");
+      });
+
+      test("should set default for time", () => {
+        assert.equal(element.time, "h:mm A");
+      });
+
+      test("should set default for date", () => {
+        assert.equal(element.date, "MMMM DD, YYYY");
+      });
     });
+
+    suite("ready", () => {
+      let stub;
+
+      setup(() => {
+        stub = sandbox.stub(window, "addEventListener");
+      });
+
+      test("should listen for rise-components-ready and call init", () => {
+        RisePlayerConfiguration.isConfigured = () => false;
+        element.ready();
+
+        assert.isTrue(stub.calledWith('rise-components-ready'));
+      });
+
+      test("should call _init() if RisePlayerConfiguration is configured", () => {
+        RisePlayerConfiguration.isConfigured = () => true;
+        sandbox.stub(element, '_init');
+
+        element.ready();
+
+        assert.isTrue(element._init.calledOnce);
+        assert.isFalse(stub.calledOnce);
+      });
+
+      test("should setup handlers for viewer events", () => {
+        sandbox.stub(element, "_reset");
+        sandbox.stub(element, "_stop");
+
+        element.dispatchEvent( new CustomEvent( "rise-presentation-play" ));
+        element.dispatchEvent( new CustomEvent( "rise-presentation-stop" ));
+
+        assert.isTrue(element._reset.calledOnce);
+        assert.isTrue(element._stop.calledOnce);
+      });
+
+    });
+
+    suite( "_reset", () => {
+      setup( () => {
+        sandbox.stub( element, "_stop" );
+        sandbox.stub( element, "_start" );
+      } );
+
+      test( "should not execute reset when an initial start still pending", () => {
+        element._reset();
+
+        assert.isFalse( element._stop.calledOnce );
+        assert.isFalse( element._start.calledOnce );
+      } );
+
+      test( "should execute reset when not the initial start", () => {
+        element._initialStart = false;
+        element._reset();
+
+        assert.isTrue( element._stop.calledOnce );
+        assert.isTrue( element._start.calledOnce );
+      } );
+    } );
+
+    suite( "_start", () => {
+      test( "coming soon ...", () => {
+
+      } );
+    } );
+
+    suite( "_stop", () => {
+      test( "coming soon ...", () => {
+
+      } );
+    } );
+
+    suite( "_handleStart", () => {
+
+      setup( () => {
+        sandbox.stub( element, "_start" );
+      } );
+
+      test( "should call _start() when this is the initial 'start'", () => {
+        const event = new CustomEvent( "start" );
+        element.dispatchEvent( event );
+
+        assert.isTrue( element._start.calledOnce );
+        assert.isFalse( element._initialStart, "_initialStart set to false" );
+      } );
+
+      test( "should not call _start() when this is not the initial start", () => {
+        element._initialStart = false;
+
+        const event = new CustomEvent( "start" );
+        element.dispatchEvent( event );
+
+        assert.isFalse( element._start.called );
+      } );
+
+    } );
 
   });
 </script>
