@@ -31,11 +31,11 @@ export default class RiseTimeDate extends RiseElement {
       },
       /**
        * The time format to apply to the current time.
-       * Valid formats are h:mm A and HH:mm
+       * Valid formats are Hours12 and Hours24
        */
       time: {
         type: String,
-        value: "h:mm A"
+        value: "Hours12"
       },
       /**
        * The specific timezone to use for formatting date and/or time. For example "US/Eastern"
@@ -53,6 +53,30 @@ export default class RiseTimeDate extends RiseElement {
     return [
       "_reset(date, time, timezone)"
     ];
+  }
+
+  static get TYPE_TIMEDATE() {
+    return "timedate";
+  }
+
+  static get TYPE_TIME() {
+    return "time";
+  }
+
+  static get TYPE_DATE() {
+    return "date";
+  }
+
+  static get TIME_FORMATS() {
+    return new Map([["Hours12", "h:mm A"], ["Hours24", "HH:mm"]] );
+  }
+
+  static get DATE_FORMATS() {
+    return [ "MMMM DD, YYYY", "MMM DD YYYY", "MM/DD/YYYY", "DD/MM/YYYY" ];
+  }
+
+  static get EVENT_DATA_ERROR() {
+    return "data-error";
   }
 
   constructor() {
@@ -76,8 +100,64 @@ export default class RiseTimeDate extends RiseElement {
     }
   }
 
+  _isValidType( type ) {
+    return type === RiseTimeDate.TYPE_TIMEDATE || type === RiseTimeDate.TYPE_TIME || type === RiseTimeDate.TYPE_DATE;
+  }
+
+  _isValidDateFormat( date ) {
+    return RiseTimeDate.DATE_FORMATS.includes( date );
+  }
+
+  _isValidTimeFormat( time ) {
+    return Array.from(RiseTimeDate.TIME_FORMATS.keys()).includes( time );
+  }
+
+  _hasValidFormat() {
+    if ( !this.date && !this.time ) {
+      return false;
+    }
+
+    switch ( this.type ) {
+      case RiseTimeDate.TYPE_TIME:
+        return this._isValidTimeFormat( this.time );
+      case RiseTimeDate.TYPE_DATE:
+        return this._isValidDateFormat( this.date );
+      case RiseTimeDate.TYPE_TIMEDATE:
+        return this._isValidDateFormat( this.date ) && this._isValidTimeFormat( this.time );
+    }
+  }
+
+  _sendTimeDateEvent( eventName, detail ) {
+    super._sendEvent( eventName, detail );
+
+    // TODO: handle setting uptime
+  }
+
+  _processTimeDate() {
+    // TODO: coming soon
+  }
+
   _start() {
-    // TODO: coming soon ..
+    if ( !this._isValidType( this.type ) ) {
+      this._sendTimeDateEvent( RiseTimeDate.EVENT_DATA_ERROR, {
+        message: "Invalid type, valid values are timedate, time and date",
+        type: this.type
+      } );
+
+      return;
+    }
+
+    if ( !this._hasValidFormat() ) {
+      this._sendTimeDateEvent( RiseTimeDate.EVENT_DATA_ERROR, {
+        message: `Invalid format. Valid date formats are: ${ RiseTimeDate.DATE_FORMATS.join(" | ") }. Valid time formats are: ${ Array.from(RiseTimeDate.TIME_FORMATS.keys()).join(" | ") }`,
+        date: this.date,
+        time: this.time
+      } );
+
+      return;
+    }
+
+    this._processTimeDate();
   }
 
   _stop() {
