@@ -49,6 +49,8 @@
       element = fixture("test-block");
 
       riseElement = element.__proto__.__proto__;
+
+      sandbox.spy(riseElement, '_sendEvent');
     });
 
     teardown(()=>{
@@ -62,7 +64,7 @@
       });
 
       test("should set default for time", () => {
-        assert.equal(element.time, "h:mm A");
+        assert.equal(element.time, "Hours12");
       });
 
       test("should set default for date", () => {
@@ -130,8 +132,67 @@
     } );
 
     suite( "_start", () => {
-      test( "coming soon ...", () => {
+      setup( () => {
+        sandbox.stub( element, "_processTimeDate" );
+      } );
 
+      test( "should not call _processTimeDate() and should send data-error event when type is invalid", ( done ) => {
+        const listener = ( evt ) => {
+          assert.deepEqual( evt.detail, {
+            message: "Invalid type, valid values are timedate, time and date",
+            type: "test"
+          } );
+
+          assert.isFalse( element._processTimeDate.calledOnce );
+
+          element.removeEventListener( "data-error", listener );
+          done();
+        };
+
+        element.addEventListener( "data-error", listener );
+        element.type = "test";
+        element.date = "DD/MM/YYYY";
+        element._start();
+      } );
+
+      test( "should not call _processTimeDate() and should send data-error event when date format is invalid", ( done ) => {
+        const listener = ( evt ) => {
+          assert.deepEqual( evt.detail, {
+            message: "Invalid format. Valid date formats are: MMMM DD, YYYY | MMM DD YYYY | MM/DD/YYYY | DD/MM/YYYY. Valid time formats are: Hours12 | Hours24",
+            date: element.date,
+            time: element.time
+          } );
+
+          assert.isFalse( element._processTimeDate.calledOnce );
+
+          element.removeEventListener( "data-error", listener );
+          done();
+        };
+
+        element.addEventListener( "data-error", listener );
+        element.type = "date";
+        element.date = "test";
+        element._start();
+      } );
+
+      test( "should not call _processTimeDate() and should send data-error event when time format is invalid", ( done ) => {
+        const listener = ( evt ) => {
+          assert.deepEqual( evt.detail, {
+            message: "Invalid format. Valid date formats are: MMMM DD, YYYY | MMM DD YYYY | MM/DD/YYYY | DD/MM/YYYY. Valid time formats are: Hours12 | Hours24",
+            date: element.date,
+            time: element.time
+          } );
+
+          assert.isFalse( element._processTimeDate.calledOnce );
+
+          element.removeEventListener( "data-error", listener );
+          done();
+        };
+
+        element.addEventListener( "data-error", listener );
+        element.type = "time";
+        element.time = "test";
+        element._start();
       } );
     } );
 
@@ -164,6 +225,112 @@
         assert.isFalse( element._start.called );
       } );
 
+    } );
+
+    suite( "_isValidType", () => {
+
+      test( "should return true if 'type' attribute is valid", () => {
+        assert.isTrue( element._isValidType( "timedate" ) );
+        assert.isTrue( element._isValidType( "time" ) );
+        assert.isTrue( element._isValidType( "date" ) );
+      } );
+
+      test( "should return false if 'type' is invalid", () => {
+        assert.isFalse( element._isValidType( "test" ) );
+      } );
+
+    } );
+
+    suite( "_isValidDate", () => {
+
+      test( "should return true if 'date' format is valid", () => {
+        assert.isTrue( element._isValidDateFormat( "MMMM DD, YYYY" ) );
+        assert.isTrue( element._isValidDateFormat( "MMM DD YYYY" ) );
+        assert.isTrue( element._isValidDateFormat( "MM/DD/YYYY" ) );
+        assert.isTrue( element._isValidDateFormat( "DD/MM/YYYY" ) );
+      } );
+
+      test( "should return false if 'date' format is invalid", () => {
+        assert.isFalse( element._isValidDateFormat( "DD MMMM, YYYY" ) );
+        assert.isFalse( element._isValidDateFormat( "DD MMM, YYYY" ) );
+      } );
+
+    } );
+
+    suite( "_isValidTime", () => {
+
+      test( "should return true if 'time' format is valid", () => {
+        assert.isTrue( element._isValidTimeFormat( "Hours12" ) );
+        assert.isTrue( element._isValidTimeFormat( "Hours24" ) );
+      } );
+
+      test( "should return false if 'time' format is invalid", () => {
+        assert.isFalse( element._isValidTimeFormat( "h:mm A" ) );
+        assert.isFalse( element._isValidTimeFormat( "test" ) );
+      } );
+
+    } );
+
+    suite( "_hasValidFormat", () => {
+
+      test( "should return false if no 'date' or 'time' format values", () => {
+        element.type = "timedate";
+        element.date = "";
+        element.time = "";
+        assert.isFalse( element._hasValidFormat() );
+      } );
+
+      test( "should return false if type is 'date' and configured with invalid format", () => {
+        element.type = "date";
+        element.date = "test";
+        assert.isFalse( element._hasValidFormat() );
+      } );
+
+      test( "should return false if type is 'time' configured with invalid format", () => {
+        element.type = "time";
+        element.time = "test";
+        assert.isFalse( element._hasValidFormat() );
+      } );
+
+      test( "should return true if type is 'date' configured with valid format", () => {
+        element.type = "date";
+        element.date = "MM/DD/YYYY";
+        assert.isTrue( element._hasValidFormat() );
+      } );
+
+      test( "should return true if type is 'time' configured with valid format", () => {
+        element.type = "time";
+        element.time = "Hours24";
+        assert.isTrue( element._hasValidFormat() );
+      } );
+
+      test( "should return true if type is 'timedate' configured with valid formats", () => {
+        element.type = "timedate";
+        element.date= "MM/DD/YYYY";
+        element.time = "Hours12";
+        assert.isTrue( element._hasValidFormat() );
+      } );
+
+      test( "should return false if type is 'timedate' and either 'date' or 'time' configured with invalid format", () => {
+        element.type = "timedate";
+        element.date= "test";
+        element.time = "Hours24";
+        assert.isFalse( element._hasValidFormat() );
+
+        element.date= "DD/MM/YYYY";
+        element.time = "test";
+        assert.isFalse( element._hasValidFormat() );
+      } );
+
+    } );
+
+    suite( "_sendCounterEvent", () => {
+      test( "should process event to be sent", () => {
+        element._sendTimeDateEvent( 'data-error', 'test' );
+
+        assert.isTrue( riseElement._sendEvent.calledWith( 'data-error', 'test' ) );
+        // TODO: test uptime set correctly
+      } );
     } );
 
   });
