@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>rise-time-date test</title>
+
+  <script src="../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+  <script src="../../node_modules/mocha/mocha.js"></script>
+  <script src="../../node_modules/chai/chai.js"></script>
+  <script src="../../node_modules/wct-mocha/wct-mocha.js"></script>
+  <script src="../../node_modules/sinon/pkg/sinon.js"></script>
+  <script src="../../node_modules/moment/moment.js"></script>
+
+  <script type="text/javascript">
+    RisePlayerConfiguration = {
+      isConfigured: () => true
+    };
+  </script>
+
+  <script type="module" src="../../src/rise-time-date.js"></script>
+</head>
+<body>
+<test-fixture id="test-time-block">
+  <template>
+    <rise-time-date type="time"></rise-time-date>
+  </template>
+</test-fixture>
+
+<script type="module">
+  suite("rise-data-counter", () => {
+    let sandbox = sinon.createSandbox();
+    let elementTime, clock;
+
+    setup(() => {
+      RisePlayerConfiguration.Logger = {
+        info: () => {},
+        warning: () => {},
+        error: () => {}
+      };
+
+      RisePlayerConfiguration.isPreview = () => {
+        return false;
+      };
+
+      clock = sinon.useFakeTimers();
+
+      elementTime = fixture("test-time-block");
+    });
+
+    teardown(()=>{
+      sandbox.restore();
+      clock.restore();
+    });
+
+    suite( "render", () => {
+      test( "should render time in 12 Hour format", () => {
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
+
+        elementTime.dispatchEvent( new CustomEvent( "start" ) );
+
+        assert.equal(elementTime.root.innerHTML, "4:20 PM");
+      } );
+
+      test( "should render time in 24 Hour format", () => {
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
+
+        elementTime.time = "Hours24";
+        elementTime.dispatchEvent( new CustomEvent( "start" ) );
+
+        assert.equal(elementTime.root.innerHTML, "16:20");
+      } );
+    } );
+  });
+</script>
+</body>
+</html>
