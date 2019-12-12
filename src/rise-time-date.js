@@ -1,14 +1,15 @@
 /* eslint-disable no-console */
 
 import { html } from "@polymer/polymer";
+import { timeOut } from "@polymer/polymer/lib/utils/async.js";
 import { RiseElement } from "rise-common-component/src/rise-element.js";
+import moment from "moment";
 import { version } from "./rise-time-date-version.js";
 
 export default class RiseTimeDate extends RiseElement {
 
   static get template() {
-    // TODO: this is temporary for skeleton
-    return html`<h1>RISE TIME & DATE</h1>`;
+    return html`[[output]]`;
   }
 
   static get properties() {
@@ -42,6 +43,14 @@ export default class RiseTimeDate extends RiseElement {
        */
       timezone: {
         type: String,
+        value: ""
+      },
+      /**
+       * The formatted and rendered value for time and/or date.
+       */
+      output: {
+        type: String,
+        readOnly: true,
         value: ""
       }
     };
@@ -84,6 +93,7 @@ export default class RiseTimeDate extends RiseElement {
 
     this._setVersion( version );
     this._initialStart = true;
+    this._processTimer = null;
   }
 
   ready() {
@@ -127,14 +137,37 @@ export default class RiseTimeDate extends RiseElement {
     }
   }
 
+  _getTimeFormatted( now ) {
+    // TODO: apply specific timezone (if provided)
+    return now.format( RiseTimeDate.TIME_FORMATS.get( this.time ) );
+  }
+
+  _render( now ) {
+    // TODO: handle rendering date
+
+    if ( this.type === "time" || this.type === "timedate" ) {
+      this._setOutput( this._getTimeFormatted( now ) );
+    }
+  }
+
   _sendTimeDateEvent( eventName, detail ) {
     super._sendEvent( eventName, detail );
 
     // TODO: handle setting uptime
   }
 
+  _runTimer() {
+    timeOut.cancel( this._processTimer );
+    this._processTimer = timeOut.run(() => this._processTimeDate(), 1000 );
+  }
+
   _processTimeDate() {
-    // TODO: coming soon
+    const now = moment();
+
+    this._render( now );
+
+    // TODO: send event with time and date data
+    this._runTimer();
   }
 
   _start() {
@@ -161,7 +194,8 @@ export default class RiseTimeDate extends RiseElement {
   }
 
   _stop() {
-    // TODO: coming soon
+    timeOut.cancel( this._processTimer );
+    this._processTimer = null;
   }
 
   _handleStart() {

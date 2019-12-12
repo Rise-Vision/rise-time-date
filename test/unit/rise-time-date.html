@@ -12,6 +12,7 @@
   <script src="../../node_modules/chai/chai.js"></script>
   <script src="../../node_modules/wct-mocha/wct-mocha.js"></script>
   <script src="../../node_modules/sinon/pkg/sinon.js"></script>
+  <script src="../../node_modules/moment/moment.js"></script>
 
   <script type="text/javascript">
     RisePlayerConfiguration = {
@@ -197,9 +198,25 @@
     } );
 
     suite( "_stop", () => {
-      test( "coming soon ...", () => {
+      test( "should cancel the timer", () => {
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
 
+        element._start();
+
+        clock.tick(60000);
+
+        // simulate 60 seconds went by, timer will have ran 60 times and processed time, ensure output is 1 minute further
+        assert.equal( element.output, "4:21 PM");
+
+        element._stop();
+
+        // simulate another 2 minutes
+        clock.tick(120000);
+
+        // timer has not been running therefore not processing time
+        assert.equal( element.output, "4:21 PM");
       } );
+
     } );
 
     suite( "_handleStart", () => {
@@ -330,6 +347,62 @@
 
         assert.isTrue( riseElement._sendEvent.calledWith( 'data-error', 'test' ) );
         // TODO: test uptime set correctly
+      } );
+    } );
+
+    suite( "_getTimeFormatted", () => {
+      test( "should return current time in 12 Hour format", () => {
+        element.type = "time";
+        element.time = "Hours12";
+
+        assert.equal( element._getTimeFormatted(moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm")), "4:20 PM" );
+      } );
+
+      test( "should return current time in 24 Hour format", () => {
+        element.type = "time";
+        element.time = "Hours24";
+
+        assert.equal( element._getTimeFormatted(moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm")), "16:20" );
+      } );
+    } );
+
+    suite( "_runTimer", () => {
+      test( "should call '_processTimeDate()' after 1 second", () => {
+        sandbox.stub( element, "_processTimeDate" );
+
+        element._runTimer();
+
+        assert.isFalse( element._processTimeDate.calledOnce );
+
+        clock.tick( 1000 );
+
+        assert.isTrue( element._processTimeDate.calledOnce );
+      } );
+    } );
+
+    suite( "_processTimeDate", () => {
+      // TODO: test that event is sent with data
+
+      test( "should render and run timer", () => {
+        sandbox.stub(element, "_render");
+        sandbox.stub(element, "_runTimer");
+
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
+
+        const now = moment();
+
+        element.type = "time";
+        element.time = "Hours12";
+
+        element._processTimeDate();
+
+        assert.isTrue( element._render.calledOnce );
+        assert.isObject( element._render.args[0][0] );
+        assert.property( element._render.args[0][0], "_isAMomentObject" );
+        assert.isTrue( element._render.args[0][0]._isAMomentObject );
+        assert.equal( now.valueOf(), element._render.args[0][0].valueOf() );
+
+        assert.isTrue( element._runTimer.calledOnce );
       } );
     } );
 
