@@ -2,7 +2,6 @@
 
 import { html } from "@polymer/polymer";
 import { timeOut } from "@polymer/polymer/lib/utils/async.js";
-import { Debouncer } from "@polymer/polymer/lib/utils/debounce.js";
 import { RiseElement } from "rise-common-component/src/rise-element.js";
 import moment from "moment";
 import { version } from "./rise-time-date-version.js";
@@ -94,7 +93,7 @@ export default class RiseTimeDate extends RiseElement {
 
     this._setVersion( version );
     this._initialStart = true;
-    this._refreshDebounceJob = null;
+    this._processTimer = null;
   }
 
   ready() {
@@ -158,7 +157,8 @@ export default class RiseTimeDate extends RiseElement {
   }
 
   _runTimer() {
-    this._refreshDebounceJob = Debouncer.debounce( this._refreshDebounceJob, timeOut.after( 1000 ), () => this._processTimeDate() );
+    timeOut.cancel( this._processTimer );
+    this._processTimer = timeOut.run(() => this._processTimeDate(), 1000 );
   }
 
   _processTimeDate() {
@@ -194,7 +194,8 @@ export default class RiseTimeDate extends RiseElement {
   }
 
   _stop() {
-    // TODO: coming soon
+    timeOut.cancel( this._processTimer );
+    this._processTimer = null;
   }
 
   _handleStart() {

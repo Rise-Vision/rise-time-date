@@ -198,9 +198,25 @@
     } );
 
     suite( "_stop", () => {
-      test( "coming soon ...", () => {
+      test( "should cancel the timer", () => {
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
 
+        element._start();
+
+        clock.tick(60000);
+
+        // simulate 60 seconds went by, timer will have ran 60 times and processed time, ensure output is 1 minute further
+        assert.equal( element.output, "4:21 PM");
+
+        element._stop();
+
+        // simulate another 2 minutes
+        clock.tick(120000);
+
+        // timer has not been running therefore not processing time
+        assert.equal( element.output, "4:21 PM");
       } );
+
     } );
 
     suite( "_handleStart", () => {
