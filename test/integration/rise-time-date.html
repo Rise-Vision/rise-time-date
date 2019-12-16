@@ -29,10 +29,22 @@
   </template>
 </test-fixture>
 
+<test-fixture id="test-date-block">
+  <template>
+    <rise-time-date type="date"></rise-time-date>
+  </template>
+</test-fixture>
+
+<test-fixture id="test-timedate-block">
+  <template>
+    <rise-time-date type="timedate"></rise-time-date>
+  </template>
+</test-fixture>
+
 <script type="module">
   suite("rise-data-counter", () => {
     let sandbox = sinon.createSandbox();
-    let elementTime, clock;
+    let elementTime, elementDate, elementTimeDate, clock;
 
     setup(() => {
       RisePlayerConfiguration.Logger = {
@@ -48,6 +60,8 @@
       clock = sinon.useFakeTimers();
 
       elementTime = fixture("test-time-block");
+      elementDate = fixture("test-date-block");
+      elementTimeDate = fixture("test-timedate-block");
     });
 
     teardown(()=>{
@@ -71,6 +85,33 @@
         elementTime.dispatchEvent( new CustomEvent( "start" ) );
 
         assert.equal(elementTime.root.innerHTML, "16:20");
+      } );
+
+      test( "should render date in default format", () => {
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
+
+        elementDate.dispatchEvent( new CustomEvent( "start" ) );
+
+        assert.equal(elementDate.root.innerHTML, "December 15, 2019");
+      } );
+
+      test( "should render date in correct format", () => {
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
+
+        elementDate.date = "DD/MM/YYYY";
+        elementDate.dispatchEvent( new CustomEvent( "start" ) );
+
+        assert.equal(elementDate.root.innerHTML, "15/12/2019");
+      } );
+
+      test( "should render time and date in correct formats", () => {
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
+
+        elementTimeDate.time = "Hours24";
+        elementTimeDate.date = "MMM DD YYYY";
+        elementTimeDate.dispatchEvent( new CustomEvent( "start" ) );
+
+        assert.equal(elementTimeDate.root.innerHTML, "16:20 Dec 15 2019");
       } );
     } );
   });

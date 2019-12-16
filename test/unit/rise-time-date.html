@@ -201,6 +201,7 @@
       test( "should cancel the timer", () => {
         clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
 
+        element.type = "time";
         element._start();
 
         clock.tick(60000);
@@ -363,6 +364,27 @@
         element.time = "Hours24";
 
         assert.equal( element._getTimeFormatted(moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm")), "16:20" );
+      } );
+    } );
+
+    suite( "_getDateFormatted", () => {
+      test( "should return current date in default format", () => {
+        element.type = "date";
+
+        assert.equal( element._getDateFormatted(moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm")), "December 15, 2019" );
+      } );
+
+      test( "should return current date in correct format", () => {
+        element.type = "date";
+        element.date = "MMM DD YYYY";
+
+        assert.equal( element._getDateFormatted(moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm")), "Dec 15 2019" );
+
+        element.date = "MM/DD/YYYY";
+        assert.equal( element._getDateFormatted(moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm")), "12/15/2019" );
+
+        element.date = "DD/MM/YYYY";
+        assert.equal( element._getDateFormatted(moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm")), "15/12/2019" );
       } );
     } );
 

@@ -142,11 +142,19 @@ export default class RiseTimeDate extends RiseElement {
     return now.format( RiseTimeDate.TIME_FORMATS.get( this.time ) );
   }
 
-  _render( now ) {
-    // TODO: handle rendering date
+  _getDateFormatted( now ) {
+    // TODO: apply specific timezone (if provided)
+    return now.format( this.date );
+  }
 
-    if ( this.type === "time" || this.type === "timedate" ) {
-      this._setOutput( this._getTimeFormatted( now ) );
+  _render( now ) {
+    switch ( this.type ) {
+      case RiseTimeDate.TYPE_TIME:
+        return this._setOutput( this._getTimeFormatted( now ) );
+      case RiseTimeDate.TYPE_DATE:
+        return this._setOutput( this._getDateFormatted( now ) );
+      case RiseTimeDate.TYPE_TIMEDATE:
+        return this._setOutput( `${ this._getTimeFormatted( now )} ${ this._getDateFormatted( now ) }` );
     }
   }
 
