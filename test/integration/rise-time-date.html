@@ -13,6 +13,7 @@
   <script src="../../node_modules/wct-mocha/wct-mocha.js"></script>
   <script src="../../node_modules/sinon/pkg/sinon.js"></script>
   <script src="../../node_modules/moment/moment.js"></script>
+  <script src="../../node_modules/moment-timezone-with-data-2010-2020/index.js"></script>
 
   <script type="text/javascript">
     RisePlayerConfiguration = {
@@ -113,7 +114,19 @@
 
         assert.equal(elementTimeDate.root.innerHTML, "16:20 Dec 15 2019");
       } );
+
+      test( "should render time and date with timezone applied", () => {
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
+
+        elementTimeDate.time = "Hours12";
+        elementTimeDate.date = "DD/MM/YYYY";
+        elementTimeDate.timezone = "Australia/Sydney";
+        elementTimeDate.dispatchEvent( new CustomEvent( "start" ) );
+
+        assert.equal(elementTimeDate.root.innerHTML, "8:20 AM 16/12/2019");
+      } );
     } );
+
   });
 </script>
 </body>
