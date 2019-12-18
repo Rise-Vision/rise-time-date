@@ -1,9 +1,9 @@
+/* global moment */
 /* eslint-disable no-console */
 
 import { html } from "@polymer/polymer";
 import { timeOut } from "@polymer/polymer/lib/utils/async.js";
 import { RiseElement } from "rise-common-component/src/rise-element.js";
-import moment from "moment";
 import { version } from "./rise-time-date-version.js";
 
 export default class RiseTimeDate extends RiseElement {
@@ -170,7 +170,7 @@ export default class RiseTimeDate extends RiseElement {
   }
 
   _processTimeDate() {
-    const now = moment();
+    const now = this.timezone ? moment().tz( this.timezone ) : moment();
 
     this._render( now );
 
