@@ -116,7 +116,7 @@
       } );
 
       test( "should render time and date with timezone applied", () => {
-        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20-05:00").tz("America/New_York").valueOf()});
 
         elementTimeDate.time = "Hours12";
         elementTimeDate.date = "DD/MM/YYYY";
