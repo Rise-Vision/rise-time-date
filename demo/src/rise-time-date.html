@@ -29,17 +29,39 @@
       }
     }
   </script>
+  <style>
+    .txtarea {
+      resize: none;
+      border : 1px solid black;
+      width: 300px;
+      height: 200px;
+    }
+  </style>
 </head>
 
 <body>
 
-<rise-time-date id="rise-time-date-01" timezone="America/Los_Angeles">
-</rise-time-date>
+<div id="dataOutput">
+  <p>Data</p>
+  <textarea cols="15" rows="15" class="txtarea"></textarea>
+</div>
+
+<div>
+  <p>Rendered</p>
+  <rise-time-date id="rise-time-date-01">
+  </rise-time-date>
+</div>
+
 
 <script>
   function configureComponents() {
     const riseTimeDate01 = document.querySelector('#rise-time-date-01');
-    console.log('Rise components ready');
+
+    riseTimeDate01.addEventListener( "data-update", evt => {
+      const dataOutput = document.querySelector( "#dataOutput textarea" );
+
+      dataOutput.value = JSON.stringify(evt.detail);
+    } );
 
     riseTimeDate01.addEventListener( "data-error", evt => {
       console.log( "data-error", evt.detail );
