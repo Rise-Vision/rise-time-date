@@ -367,6 +367,54 @@
       } );
     } );
 
+    suite( "_get12HourValue", () => {
+      test( "should return correct 12 hour value", () => {
+        element.type = "time";
+        element.time = "Hours12";
+
+        assert.equal( element._get12HourValue(moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm")), 4 );
+        assert.equal( element._get12HourValue(moment("2019-12-15T04:20", "YYYY-MM-DDTHH:mm")), 4 );
+        assert.equal( element._get12HourValue(moment("2019-12-15T23:45", "YYYY-MM-DDTHH:mm")), 11 );
+        assert.equal( element._get12HourValue(moment("2019-12-15T11:45", "YYYY-MM-DDTHH:mm")), 11 );
+        assert.equal( element._get12HourValue(moment("2019-12-15T12:10", "YYYY-MM-DDTHH:mm")), 12 );
+        assert.equal( element._get12HourValue(moment("2019-12-15T00:10", "YYYY-MM-DDTHH:mm")), 12 );
+        assert.equal( element._get12HourValue(moment("2019-12-15T13:30", "YYYY-MM-DDTHH:mm")), 1 );
+        assert.equal( element._get12HourValue(moment("2019-12-15T01:30", "YYYY-MM-DDTHH:mm")), 1 );
+      } );
+    } );
+
+    suite( "_getTimeData", () => {
+      test( "should return correct data when time format is 'Hours12'", () => {
+        element.type = "time";
+        element.time = "Hours12";
+
+        assert.deepEqual( element._getTimeData(moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm")), {
+          formatted: "4:20 PM",
+          units: {
+            hour: 4,
+            minute: 20,
+            second: 0,
+            meridiem: "PM"
+          }
+        } );
+      } );
+
+      test( "should return correct data when time format is 'Hours24'", () => {
+        element.type = "time";
+        element.time = "Hours24";
+
+        assert.deepEqual( element._getTimeData(moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm")), {
+          formatted: "16:20",
+          units: {
+            hour: 16,
+            minute: 20,
+            second: 0
+          }
+        } );
+      } );
+
+    } );
+
     suite( "_getDateFormatted", () => {
       test( "should return current date in default format", () => {
         element.type = "date";
@@ -405,7 +453,8 @@
     suite( "_processTimeDate", () => {
       // TODO: test that event is sent with data
 
-      test( "should render and run timer", () => {
+      test( "should send 'data-update' event, render and run timer", () => {
+        sandbox.stub(element, "_sendTimeDateEvent");
         sandbox.stub(element, "_render");
         sandbox.stub(element, "_runTimer");
 
@@ -417,6 +466,10 @@
         element.time = "Hours12";
 
         element._processTimeDate();
+
+        assert.isTrue( element._sendTimeDateEvent.calledOnce );
+        assert.equal( element._sendTimeDateEvent.args[0][0], "data-update" );
+        assert.isObject( element._sendTimeDateEvent.args[0][1] );
 
         assert.isTrue( element._render.calledOnce );
         assert.isObject( element._render.args[0][0] );
