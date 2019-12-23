@@ -127,6 +127,79 @@
       } );
     } );
 
+    suite( "data event", () => {
+      test( "should receive data event immediately after component starts", (done) => {
+        const handler = function( evt ) {
+          assert.isObject( evt.detail );
+          assert.equal( evt.detail.type, "timedate" );
+          assert.equal( evt.detail.date, "December 15, 2019" );
+          assert.isObject( evt.detail.time );
+          assert.deepEqual( evt.detail.time, {
+            formatted: "4:20 PM",
+            units: {
+              hour: 4,
+              minute: 20,
+              second: 0,
+              meridiem: "PM"
+            }
+          } );
+          assert.isObject( evt.detail.user );
+          assert.deepEqual( evt.detail.user, {
+            dateFormat: "MMMM DD, YYYY",
+            timeFormat: "Hours12",
+            timezone: null
+          } );
+
+          done();
+        };
+
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
+
+        elementTimeDate.addEventListener( "data-update", handler );
+        elementTimeDate.dispatchEvent( new CustomEvent( "start" ) );
+      } );
+
+      test( "should receive data events per refresh", ( done ) => {
+        const handler = function( evt ) {
+          dataCount += 1;
+
+          if (dataCount === 2) {
+            assert.isObject( evt.detail );
+            assert.equal( evt.detail.type, "timedate" );
+            assert.equal( evt.detail.date, "December 15, 2019" );
+            assert.isObject( evt.detail.time );
+            assert.deepEqual( evt.detail.time, {
+              formatted: "4:20 PM",
+              units: {
+                hour: 4,
+                minute: 20,
+                second: 1,
+                meridiem: "PM"
+              }
+            } );
+            assert.isObject( evt.detail.user );
+            assert.deepEqual( evt.detail.user, {
+              dateFormat: "MMMM DD, YYYY",
+              timeFormat: "Hours12",
+              timezone: null
+            } );
+
+            done();
+          }
+
+        };
+
+        let dataCount = 0;
+
+        clock = sinon.useFakeTimers({now: moment("2019-12-15T16:20", "YYYY-MM-DDTHH:mm").valueOf()});
+
+        elementTimeDate.addEventListener( "data-update", handler );
+        elementTimeDate.dispatchEvent( new CustomEvent( "start" ) );
+
+        clock.tick(1000);
+      } );
+    } );
+
   });
 </script>
 </body>

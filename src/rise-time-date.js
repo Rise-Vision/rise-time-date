@@ -84,6 +84,14 @@ export default class RiseTimeDate extends RiseElement {
     return [ "MMMM DD, YYYY", "MMM DD YYYY", "MM/DD/YYYY", "DD/MM/YYYY" ];
   }
 
+  static get TIME_UNITS() {
+    return ["hour", "minute", "second"];
+  }
+
+  static get EVENT_DATA_UPDATE() {
+    return "data-update";
+  }
+
   static get EVENT_DATA_ERROR() {
     return "data-error";
   }
@@ -137,14 +145,34 @@ export default class RiseTimeDate extends RiseElement {
     }
   }
 
+  _get12HourValue( now ) {
+    const hour = moment(now.valueOf() ).format("h");
+
+    return parseInt( hour, 10 );
+  }
+
   _getTimeFormatted( now ) {
-    // TODO: apply specific timezone (if provided)
     return now.format( RiseTimeDate.TIME_FORMATS.get( this.time ) );
   }
 
   _getDateFormatted( now ) {
-    // TODO: apply specific timezone (if provided)
     return now.format( this.date );
+  }
+
+  _getTimeData( now ) {
+    const data =  {
+      formatted: this._getTimeFormatted( now ),
+      units: RiseTimeDate.TIME_UNITS.reduce( (units, unit) => {
+        units[ unit ] = unit === "hour" && this.time === "Hours12" ? this._get12HourValue( now ) : now[unit]();
+        return units;
+      }, {})
+    };
+
+    if ( this.time === "Hours12" ) {
+      data.units.meridiem = data.formatted.slice(-2);
+    }
+
+    return data;
   }
 
   _render( now ) {
@@ -171,10 +199,19 @@ export default class RiseTimeDate extends RiseElement {
 
   _processTimeDate() {
     const now = this.timezone ? moment().tz( this.timezone ) : moment();
+    const data = {
+      type: this.type,
+      date: this.type === "date" || this.type === "timedate" ? this._getDateFormatted( now ) : null,
+      time: this.type === "time" || this.type === "timedate" ? this._getTimeData( now ) : null,
+      user: {
+        dateFormat: this.type === "date" || this.type === "timedate" ? this.date : null,
+        timeFormat: this.type === "time" || this.type === "timedate" ? this.time : null,
+        timezone: this.timezone || null
+      }
+    };
 
     this._render( now );
-
-    // TODO: send event with time and date data
+    this._sendTimeDateEvent( RiseTimeDate.EVENT_DATA_UPDATE, data );
     this._runTimer();
   }
 
