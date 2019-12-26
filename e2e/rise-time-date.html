@@ -29,20 +29,56 @@
       }
     }
   </script>
+
+  <style>
+    section {
+      font-size: 72px;
+    }
+    .output-time {
+      color: red;
+    }
+    .output-timedate {
+      color: green;
+    }
+  </style>
 </head>
 <body>
-<rise-time-date id="rise-time-date-01">
-</rise-time-date>
+  <div style="display: none">
+    <rise-time-date id="rise-time-date-date" type="date">
+    </rise-time-date>
 
-<script>
-  function configureComponents() {
-    console.log('Rise components ready');
-  }
+    <rise-time-date id="rise-time-date-time" type="time">
+    </rise-time-date>
 
-  window.addEventListener( "rise-components-ready", configureComponents );
-</script>
-<script>
-  RisePlayerConfiguration.configure();
-</script>
+    <rise-time-date id="rise-time-date-timedate" type="timedate">
+    </rise-time-date>
+  </div>
+
+  <section id="output-date">
+  </section>
+  <section id="output-time">
+  </section>
+  <section id="output-timedate">
+  </section>
+
+  <script>
+    function configureComponents() {
+      [ "date", "time", "timedate" ].forEach(key => {
+        const component = document.getElementById( `rise-time-date-${ key }` );
+        const target = document.getElementById( `output-${ key }` );
+
+        component.addEventListener( "data-update", data => {
+          if(data.detail) {
+            target.innerHTML = text;
+          }
+        });
+      });
+    }
+
+    window.addEventListener( "rise-components-ready", configureComponents );
+  </script>
+  <script>
+    RisePlayerConfiguration.configure();
+  </script>
 </body>
 </html>
