@@ -40,6 +40,9 @@
     .output-timedate {
       color: green;
     }
+    .ok {
+      background-color: #9932CC;
+    }
   </style>
 </head>
 <body>
@@ -70,6 +73,8 @@
         component.addEventListener( "data-update", data => {
           if(data.detail) {
             target.innerHTML = key;
+
+            target.classList.add( "ok" );
           }
         });
       });
