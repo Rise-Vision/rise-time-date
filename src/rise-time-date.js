@@ -145,11 +145,8 @@ export default class RiseTimeDate extends RiseElement {
     }
   }
 
-  _get12HourValue( provided ) {
-    const now = this.timezone ? provided.tz( this.timezone ) : provided;
-    const hour = now.format("h");
-
-    return parseInt( hour, 10 );
+  _get12HourValue( now ) {
+    return parseInt( now.format("h"), 10 );
   }
 
   _getTimeFormatted( now ) {

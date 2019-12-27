@@ -117,7 +117,7 @@ jobs:
       - run: mkdir -p ~/.config
       - run: cp -r gcloud ~/.config
       - run: |
-          VERSION=$(cat version-string/version)
+          VERSION=2019.12.26.18.51
           TARGET=$WIDGETS_BASE/staging/components/$COMPONENT_NAME/$VERSION/
           echo Deploying version $VERSION to $COMPONENT_NAME
           node_modules/rise-common-component/scripts/deploy-gcs.sh $COMPONENT_NAME $TARGET
