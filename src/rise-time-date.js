@@ -146,9 +146,7 @@ export default class RiseTimeDate extends RiseElement {
   }
 
   _get12HourValue( now ) {
-    const hour = moment(now.valueOf() ).format("h");
-
-    return parseInt( hour, 10 );
+    return parseInt( now.format("h"), 10 );
   }
 
   _getTimeFormatted( now ) {
