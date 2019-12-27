@@ -187,7 +187,15 @@ export default class RiseTimeDate extends RiseElement {
   _sendTimeDateEvent( eventName, detail ) {
     super._sendEvent( eventName, detail );
 
-    // TODO: handle setting uptime
+    switch ( eventName ) {
+      case RiseTimeDate.EVENT_DATA_ERROR:
+        super._setUptimeError( true );
+        break;
+      case RiseTimeDate.EVENT_DATA_UPDATE:
+        super._setUptimeError( false );
+        break;
+      default:
+    }
   }
 
   _runTimer() {
@@ -215,6 +223,7 @@ export default class RiseTimeDate extends RiseElement {
 
   _start() {
     if ( !this._isValidType( this.type ) ) {
+      super.log( "error", "Invalid type", { type: this.type } );
       this._sendTimeDateEvent( RiseTimeDate.EVENT_DATA_ERROR, {
         message: "Invalid type, valid values are timedate, time and date",
         type: this.type
@@ -224,6 +233,7 @@ export default class RiseTimeDate extends RiseElement {
     }
 
     if ( !this._hasValidFormat() ) {
+      super.log( "error", "Invalid format", { type: this.type, date: this.date, time: this.time } );
       this._sendTimeDateEvent( RiseTimeDate.EVENT_DATA_ERROR, {
         message: `Invalid format. Valid date formats are: ${ RiseTimeDate.DATE_FORMATS.join(" | ") }. Valid time formats are: ${ Array.from(RiseTimeDate.TIME_FORMATS.keys()).join(" | ") }`,
         date: this.date,

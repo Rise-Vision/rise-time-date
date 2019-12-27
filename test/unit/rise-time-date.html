@@ -52,6 +52,8 @@
       riseElement = element.__proto__.__proto__;
 
       sandbox.spy(riseElement, '_sendEvent');
+      sandbox.stub(riseElement, '_setUptimeError');
+      sandbox.stub(riseElement, 'log');
     });
 
     teardown(()=>{
@@ -145,6 +147,7 @@
           } );
 
           assert.isFalse( element._processTimeDate.calledOnce );
+          assert.isTrue( element.log.calledOnce );
 
           element.removeEventListener( "data-error", listener );
           done();
@@ -165,6 +168,7 @@
           } );
 
           assert.isFalse( element._processTimeDate.calledOnce );
+          assert.isTrue( element.log.calledOnce );
 
           element.removeEventListener( "data-error", listener );
           done();
@@ -185,6 +189,7 @@
           } );
 
           assert.isFalse( element._processTimeDate.calledOnce );
+          assert.isTrue( element.log.calledOnce );
 
           element.removeEventListener( "data-error", listener );
           done();
@@ -342,12 +347,12 @@
 
     } );
 
-    suite( "_sendCounterEvent", () => {
+    suite( "__sendTimeDateEvent", () => {
       test( "should process event to be sent", () => {
         element._sendTimeDateEvent( 'data-error', 'test' );
 
         assert.isTrue( riseElement._sendEvent.calledWith( 'data-error', 'test' ) );
-        // TODO: test uptime set correctly
+        assert.isTrue( riseElement._setUptimeError.calledWith( true ) );
       } );
     } );
 
@@ -451,7 +456,6 @@
     } );
 
     suite( "_processTimeDate", () => {
-      // TODO: test that event is sent with data
 
       test( "should send 'data-update' event, render and run timer", () => {
         sandbox.stub(element, "_sendTimeDateEvent");
