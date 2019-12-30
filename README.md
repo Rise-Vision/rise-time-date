@@ -43,19 +43,24 @@ The component will send the following events:
 
 The component listens for the following events:
 
-- **start**: This event will trigger the component to do internal configuration and then render the formatted date and/or time every second, as well as sending the **data-update** event. It can be dispatched to the component when the configured event has been fired.
+- **start**: This event will cause the component to do internal configuration and then render the formatted date and/or time every second, as well as sending the **data-update** event. It can be dispatched to the component when the configured event has been fired.
 
 ### Provided data
 
 The **data-update** event provides an object with a `details` property, containing `date`, `time`, and `user` properties. Each of these contain the following fields:
 
-- `date`
-  - A formatted value of the current date
+- `type`: The selected component type
+- `date`: A formatted value of the current date
 - `time`
-  - A formatted value of the current time
-  - The individual units making up the time adhering to user selected 12 or 24 hour format and timezone format applied (if chosen). Hour, Minutes, Seconds
-- `user`
-  - The user selected values: `time format`, `date format`, and `timezone`
+  - `formatted`: A formatted value of the current time
+  - `units`: The individual units making up the time adhering to user selected 12 or 24 hour format and timezone format applied, if chosen:
+    - `hour`
+    - `minutes`
+    - `seconds`
+- `user`: The user selected values
+  - `dateFormat`
+  - `timeFormat`
+  - `timezone`
 
 ### Logging
 
