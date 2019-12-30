@@ -4,18 +4,20 @@
 
 `rise-time-date` is a Polymer 3 Web Component that formats and renders the current time and/or date while additionally providing this date in an event.
 
-## DISCLAIMER
-
-This component is currently under development and is a work in progress. 
-
 ## Usage
 
 The below illustrates simple usage of the component.
 
 #### Example
 
-Coming soon ...
+```
+  <rise-time-date
+      id="rise-time-date-01" label="Time and Date"
+      type="timedate" date="DD/MM/YYYY" time="Hours24" timezone="US/Eastern">
+  </rise-time-date>
+```
 
+Although this is a visual component, an event listener can also be registered to process the data it provides. You can check the available events in the [events section](#events)
 
 ### Attributes
 
@@ -23,8 +25,11 @@ This component receives the following list of attributes:
 
 - **id**: (string): Unique HTMLElement id.
 - **label**: (string): Assigns the label to use for the instance of the component in Template Editor.
-
-**Note:** More attributes coming soon ...
+- **type**: (string / required): Indicates the type of the component. Valid values are `timedate`, `time` and `date`.
+- **date**: (string / optional): The specific format to use for displaying the current date. Valid formats are `MMMM DD, YYYY`, `MMM DD YYYY`, `MM/DD/YYYY`, and `DD/MM/YYYY`. Defaults to `MMMM DD, YYYY`.
+- **time**: (string / optional): The time format in terms of hours to use for displaying the current time. Valid formats are `Hours12` and `Hours24`. Defaults to `Hours12`.
+- **timezone**: (string / optional): The specific timezone to use for formatting date and/or time (for example, `US/Eastern`). Valid values will be determined by checking the existence of the value in Moment's Timezone list of timezone names. Defaults to the local machine's timezone.
+ - **non-editable**: ( empty / optional ): If present, it indicates this component is not available for customization in the Template Editor.
 
 This component does not support PUD; it will need to be handled by Designers on a per Template basis.
 
@@ -33,18 +38,32 @@ This component does not support PUD; it will need to be handled by Designers on 
 The component will send the following events:
 
 - **configured**: The component has initialized what it requires to and is ready to handle a _start_ event.
+- **data-update**: An event providing an object as described [here](#provided-data).
+- **data-error**: An event indicating there have been invalid attribute values (i.e. time format) provided. An error object is provided in `event.details`. This event will be sent once only.
 
 The component listens for the following events:
 
-- **start**: This event will cause the component to start generating events. It can be dispatched to the component when the _configured_ event has been fired.
+- **start**: This event will trigger the component to do internal configuration and then render the formatted date and/or time every second, as well as sending the **data-update** event. It can be dispatched to the component when the configured event has been fired.
 
 ### Provided data
 
-Coming soon ...
+The **data-update** event provides an object with a `details` property, containing `date`, `time`, and `user` properties. Each of these contain the following fields:
+
+- `date`
+  - A formatted value of the current date
+- `time`
+  - A formatted value of the current time
+  - The individual units making up the time adhering to user selected 12 or 24 hour format and timezone format applied (if chosen). Hour, Minutes, Seconds
+- `user`
+  - The user selected values: `time format`, `date format`, and `timezone`
 
 ### Logging
 
-Coming soon ...
+The component logs the following events to BQ:
+
+- **start received**: The component receives the start event and commences execution.
+- **Invalid type**: The component does now have a type matching `timedate`, `time` or `date`.
+- **Invalid format**: The provided `date` or `time` do not match the valid formats.
 
 ### Offline play
 
@@ -98,7 +117,7 @@ http://127.0.0.1:8081/components/rise-time-date/demo/src/rise-time-date.html
 
 ### Demo project
 
-A demo project showing how to implement a simple HH:mm:ss counter can be found in the `demo` folder.
+A demo project showing how to implement a simple time-date listener can be found in the `demo` folder.
 
 Another option is using `example-time-date-component` as the scaffolding for a new template. This project can be found in https://github.com/Rise-Vision/html-template-library
 
