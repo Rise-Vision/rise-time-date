@@ -47,7 +47,7 @@ The component listens for the following events:
 
 ### Provided data
 
-The **data-update** event provides an object with a `details` property, containing `date`, `time`, and `user` properties. Each of these contain the following fields:
+The **data-update** event provides an object with a `details` property, containing:
 
 - `type`: The selected component type
 - `date`: A formatted value of the current date
