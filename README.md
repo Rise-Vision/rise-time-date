@@ -28,7 +28,7 @@ This component receives the following list of attributes:
 - **type**: (string / required): Indicates the type of the component. Valid values are `timedate`, `time` and `date`.
 - **date**: (string / optional): The specific format to use for displaying the current date. Valid formats are `MMMM DD, YYYY`, `MMM DD YYYY`, `MM/DD/YYYY`, and `DD/MM/YYYY`. Defaults to `MMMM DD, YYYY`.
 - **time**: (string / optional): The time format in terms of hours to use for displaying the current time. Valid formats are `Hours12` and `Hours24`. Defaults to `Hours12`.
-- **timezone**: (string / optional): The specific timezone to use for formatting date and/or time (for example, `US/Eastern`). Valid values will be determined by checking the existence of the value in Moment's Timezone list of timezone names. Defaults to the local machine's timezone.
+- **timezone**: (string / optional): The specific timezone to use for formatting date and/or time (for example, `US/Eastern`). Valid values will be determined by checking the existence of the value in Moment's Timezone list of timezone names (an unofficial list can be found [here](https://gist.github.com/diogocapela/12c6617fc87607d11fd62d2a4f42b02a)). Defaults to the local machine's timezone.
  - **non-editable**: ( empty / optional ): If present, it indicates this component is not available for customization in the Template Editor.
 
 This component does not support PUD; it will need to be handled by Designers on a per Template basis.
