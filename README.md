@@ -66,9 +66,9 @@ The **data-update** event provides an object with a `details` property, containi
 
 The component logs the following events to BQ:
 
-- **start received**: The component receives the start event and commences execution.
-- **Invalid type**: The component does now have a type matching `timedate`, `time` or `date`.
-- **Invalid format**: The provided `date` or `time` do not match the valid formats.
+- **start received** _(info)_: The component receives the start event and commences execution.
+- **Invalid type** _(error)_: The component does now have a type matching `timedate`, `time` or `date`.
+- **Invalid format** _(error)_: The provided `date` or `time` do not match the valid formats.
 
 ### Offline play
 
