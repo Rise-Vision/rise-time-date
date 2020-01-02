@@ -8,9 +8,7 @@ This needs to be done just once per machine.
 npm install -g polymer-cli@1.9.7
 ```
 
-**Note**: If EPERM errors occur then install polymer-cli using the
-`--unsafe-perm` flag ( `npm install -g polymer-cli@1.9.7 --unsafe-perm` )
-and/or using sudo.
+**Note**: If EPERM errors occur then install polymer-cli using the `--unsafe-perm` flag ( `npm install -g polymer-cli@1.9.7 --unsafe-perm` ) and/or using sudo.
 
 ## Build instructions
 
