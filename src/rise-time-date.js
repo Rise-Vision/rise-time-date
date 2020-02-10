@@ -88,14 +88,6 @@ export default class RiseTimeDate extends RiseElement {
     return ["hour", "minute", "second"];
   }
 
-  static get EVENT_DATA_UPDATE() {
-    return "data-update";
-  }
-
-  static get EVENT_DATA_ERROR() {
-    return "data-error";
-  }
-
   constructor() {
     super();
 
