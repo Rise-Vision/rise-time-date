@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "Rise time & date component",
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
+    "preinstall": "npx npm-force-resolutions || true",
     "prebuild": "eslint .",
     "build": "polymer build && ./node_modules/rise-common-component/scripts/extract-source.sh rise-time-date",
     "postbuild": "gulp",
