@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "Rise time & date component",
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "prebuild": "eslint .",
     "build": "polymer build && ./node_modules/rise-common-component/scripts/extract-source.sh rise-time-date",
     "postbuild": "gulp",
@@ -46,5 +47,8 @@
     "sinon": "^7.3.2",
     "wct-istanbul": "^0.14.3",
     "wct-mocha": "^1.0.0"
+  },
+  "resolutions": {
+    "braces": "^2.3.1"
   }
 }
