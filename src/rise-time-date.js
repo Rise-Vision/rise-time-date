@@ -5,7 +5,6 @@ import { html } from "@polymer/polymer";
 import { timeOut } from "@polymer/polymer/lib/utils/async.js";
 import { RiseElement } from "rise-common-component/src/rise-element.js";
 import { version } from "./rise-time-date-version.js";
-import "@polymer/iron-jsonp-library/iron-jsonp-library.js";
 
 export default class RiseTimeDate extends RiseElement {
 
