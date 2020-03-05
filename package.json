@@ -1,6 +1,6 @@
 {
   "name": "rise-time-date",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Rise time & date component",
   "scripts": {
     "preinstall": "npx npm-force-resolutions || true",
