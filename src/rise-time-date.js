@@ -98,9 +98,14 @@ export default class RiseTimeDate extends RiseElement {
 
   ready() {
     super.ready();
+  }
 
-    this.addEventListener( "rise-presentation-play", () => this._reset());
-    this.addEventListener( "rise-presentation-stop", () => this._stop());
+  _handleRisePresentationPlay() {
+    this._reset();
+  }
+
+  _handleRisePresentationStop() {
+    this._stop();
   }
 
   _reset() {
