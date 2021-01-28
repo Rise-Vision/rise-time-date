@@ -4,11 +4,19 @@
 
 `rise-time-date` is a Polymer 3 Web Component that formats and renders the current time and/or date while additionally providing this date in an event.
 
-## Usage
+## Usage For Designers
 
 The below illustrates simple usage of the component.
+A complete setup of the component can be found [here](https://github.com/Rise-Vision/html-template-library/tree/master/example-time-date-component).
 
-#### Example
+### Integration in a Template
+#### HTML
+Add a reference to the component in the `<head>` section of **template.html**.
+```
+  <script src="https://widgets.risevision.com/stable/components/rise-time-date/1/rise-time-date.js"></script>
+```
+
+Add an instance of the component to `<body>` section of **template.html**.
 
 ```
   <rise-time-date
@@ -18,6 +26,37 @@ The below illustrates simple usage of the component.
 ```
 
 Although this is a visual component, an event listener can also be registered to process the data it provides. You can check the available events in the [events section](#events)
+
+#### JS
+To test the template in a browser outside Player/Apps, add the following lines (replacing with the appropriate element id):
+
+```
+const riseTimeDate01 = document.querySelector('#rise-time-date-01');
+
+RisePlayerConfiguration.Helpers.sendStartEvent( riseTimeDate01 );
+```
+
+#### JSON
+For npm to install dependencies neccesssary add refrences to component repo in **package.json**.
+```
+"dependencies": {
+    "rise-image": "git://github.com/Rise-Vision/rise-image.git",
+    "@webcomponents/webcomponentsjs": "^2.1.1"
+    ...
+  },
+```
+
+#### Build and Test Locally in Browswer 
+Execute the following commands in Terminal and preview template.html in browser using a simple server.  example: http://localhost:8081/build/prod/src/template.html:
+
+```
+npm install
+npm install -g polymer-cli@1.9.7
+npm run build
+python -m SimpleHTTPServer 8081
+```
+For more specifics please see: HTML Template - Build and Test Locally in Browser Documentation. 
+https://docs.google.com/document/d/1_xgKe790ZuweDVg-Abj3032an6we7YLH_lQPpe-M88M/edit#bookmark=id.21c68d5f8a7c
 
 ### Attributes
 
@@ -68,6 +107,17 @@ The **data-update** event provides an object with a `details` property, containi
   - `timeFormat`
   - `timezone`
 
+
+## Development
+### Built With
+- [Polymer 3](https://www.polymer-project.org/)
+- [Polymer CLI](https://github.com/Polymer/tools/tree/master/packages/cli)
+- [WebComponents Polyfill](https://www.webcomponents.org/polyfills/)
+- [npm](https://www.npmjs.org)
+
+### Offline play
+The component supports offline play out of the box.
+
 ### Logging
 
 The component logs the following events to BQ:
@@ -75,18 +125,6 @@ The component logs the following events to BQ:
 - **start received** _(info)_: The component receives the start event and commences execution.
 - **Invalid type** _(error)_: The component does now have a type matching `timedate`, `time` or `date`.
 - **Invalid format** _(error)_: The provided `date` or `time` do not match the valid formats.
-
-### Offline play
-
-The component supports offline play out of the box.
-
-## Built With
-- [Polymer 3](https://www.polymer-project.org/)
-- [Polymer CLI](https://github.com/Polymer/tools/tree/master/packages/cli)
-- [WebComponents Polyfill](https://www.webcomponents.org/polyfills/)
-- [npm](https://www.npmjs.org)
-
-## Development
 
 ### Local Development Build
 Clone this repo and change into this project directory.
@@ -131,31 +169,6 @@ http://127.0.0.1:8081/components/rise-time-date/demo/src/rise-time-date.html
 A demo project showing how to implement a simple time-date listener can be found in the `demo` folder.
 
 Another option is using `example-time-date-component` as the scaffolding for a new template. This project can be found in https://github.com/Rise-Vision/html-template-library
-
-### Integration in a Template
-
-After creating the Template's structure in `html-template-library`, add a reference to the component in the `<head>` section of `template.html`:
-
-```
-<script src="https://widgets.risevision.com/stable/components/rise-time-date/1/rise-time-date.js"></script>
-```
-
-Add an instance of the component, as shown in the example:
-
-```
-  <rise-time-date
-      id="rise-time-date-01" label="Time and Date"
-      type="timedate" date="DD/MM/YYYY" time="Hours24" timezone="US/Eastern">
-  </rise-time-date>
-```
-
-To test the template in a browser outside Player/Apps, add the following lines (replacing with the appropriate element id):
-
-```
-const riseTimeDate01 = document.querySelector('#rise-time-date-01');
-
-RisePlayerConfiguration.Helpers.sendStartEvent( riseTimeDate01 );
-```
 
 ## Submitting Issues
 If you encounter problems or find defects we really want to hear about them. If you could take the time to add them as issues to this Repository it would be most appreciated. When reporting issues, please use the following format where applicable:
