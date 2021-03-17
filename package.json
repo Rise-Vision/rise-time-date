@@ -1,6 +1,6 @@
 {
   "name": "rise-time-date",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Rise time & date component",
   "scripts": {
     "prebuild": "eslint .",
@@ -29,7 +29,7 @@
   "homepage": "https://github.com/Rise-Vision/rise-time-date/#readme",
   "dependencies": {
     "moment": "^2.24.0",
-    "moment-timezone-with-data-2010-2020": "^0.4.0",
+    "moment-timezone": "^0.5.33",
     "rise-common-component": "git://github.com/Rise-Vision/rise-common-component.git#v1.9.2"
   },
   "devDependencies": {
